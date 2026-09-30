@@ -1,9 +1,9 @@
 
 import streamlit as st
 
-# ==========================================
+# =========================================================
 # PAGE SETTINGS
-# ==========================================
+# =========================================================
 
 st.set_page_config(
     page_title="GPA Calculator",
@@ -12,268 +12,413 @@ st.set_page_config(
 )
 
 
-# ==========================================
-# SESSION STATE
-# ==========================================
+# =========================================================
+# CUSTOM CSS
+# =========================================================
 
-if "subjects" not in st.session_state:
-    st.session_state.subjects = [
+st.markdown(
+    """
+    <style>
+
+    .block-container {
+        max-width: 900px;
+        padding-top: 3rem;
+        padding-bottom: 3rem;
+    }
+
+    .summary-box {
+        border: 1px solid #dadce0;
+        border-radius: 12px;
+        padding: 25px 20px;
+        margin-bottom: 30px;
+        background-color: white;
+    }
+
+    .summary-label {
+        font-size: 14px;
+        color: #5f6368;
+        margin-bottom: 5px;
+    }
+
+    .summary-gpa {
+        font-size: 38px;
+        font-weight: 500;
+        color: #202124;
+        line-height: 1.2;
+    }
+
+    .summary-value {
+        font-size: 24px;
+        font-weight: 500;
+        color: #202124;
+        line-height: 1.5;
+    }
+
+    .course-header {
+        font-size: 14px;
+        font-weight: 500;
+        color: #5f6368;
+        margin-bottom: 8px;
+    }
+
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+
+# =========================================================
+# SESSION STATE
+# =========================================================
+
+if "courses" not in st.session_state:
+
+    st.session_state.courses = [
         {
-            "name": "Subject 1",
-            "mark": 0.0
+            "name": "",
+            "grade": "A",
+            "credits": 3.0
         }
     ]
 
 
-if "remove_message" not in st.session_state:
-    st.session_state.remove_message = ""
+# =========================================================
+# GPA SCALE
+# =========================================================
+# A is the HIGHEST grade.
+# There is NO A+.
+
+grade_points = {
+    "A": 4.00,
+    "A-": 3.70,
+    "B+": 3.30,
+    "B": 3.00,
+    "B-": 2.70,
+    "C+": 2.30,
+    "C": 2.00,
+    "C-": 1.70,
+    "D+": 1.30,
+    "D": 1.00,
+    "D-": 0.70,
+    "F": 0.00
+}
 
 
-# ==========================================
-# GPA SYSTEM
-# ==========================================
+# =========================================================
+# ADD COURSE
+# =========================================================
 
-def get_gpa(mark):
+def add_course():
 
-    if mark >= 90:
-        return 4.00
-
-    elif mark >= 80:
-        return 4.00
-
-    elif mark >= 70:
-        return 3.00
-
-    elif mark >= 60:
-        return 2.00
-
-    elif mark >= 50:
-        return 1.00
-
-    else:
-        return 0.00
-
-
-# ==========================================
-# ADD SUBJECT
-# ==========================================
-
-def add_subject():
-
-    number = len(st.session_state.subjects) + 1
-
-    st.session_state.subjects.append(
+    st.session_state.courses.append(
         {
-            "name": f"Subject {number}",
-            "mark": 0.0
+            "name": "",
+            "grade": "A",
+            "credits": 3.0
         }
     )
 
 
-# ==========================================
-# REMOVE SUBJECT
-# ==========================================
+# =========================================================
+# DELETE COURSE
+# =========================================================
 
-def remove_subject():
+def delete_course(index):
 
-    if len(st.session_state.subjects) > 1:
+    if len(st.session_state.courses) > 1:
 
-        st.session_state.subjects.pop()
-
-        st.session_state.remove_message = ""
+        st.session_state.courses.pop(index)
 
     else:
 
-        st.session_state.remove_message = (
-            "You must have at least 1 subject."
-        )
+        st.session_state.courses[0] = {
+            "name": "",
+            "grade": "A",
+            "credits": 3.0
+        }
 
 
-# ==========================================
+# =========================================================
+# RESET
+# =========================================================
+
+def reset_courses():
+
+    st.session_state.courses = [
+        {
+            "name": "",
+            "grade": "A",
+            "credits": 3.0
+        }
+    ]
+
+
+# =========================================================
+# CALCULATE GPA
+# =========================================================
+
+total_credits = 0.0
+total_points = 0.0
+
+
+for course in st.session_state.courses:
+
+    credits = course["credits"]
+    grade = course["grade"]
+
+    points = grade_points[grade]
+
+    total_credits += credits
+
+    total_points += points * credits
+
+
+if total_credits > 0:
+
+    cumulative_gpa = (
+        total_points / total_credits
+    )
+
+else:
+
+    cumulative_gpa = 0.0
+
+
+# =========================================================
 # TITLE
-# ==========================================
+# =========================================================
 
-st.title("🎓 GPA 4.0 Calculator")
+st.title("GPA Calculator")
 
 st.write(
-    "Add your subjects, rename them, enter your marks, "
-    "and calculate your GPA."
+    "Enter your courses, grades, and credits to calculate "
+    "your cumulative GPA."
 )
 
 
-# ==========================================
-# SUBJECT CONTROLS
-# ==========================================
+# =========================================================
+# SUMMARY
+# =========================================================
 
-st.markdown("---")
+st.markdown(
+    f"""
+    <div class="summary-box">
 
-col1, col2, col3 = st.columns([1, 2, 1])
+        <div style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-align: left;
+        ">
+
+            <div style="flex: 1;">
+                <div class="summary-label">
+                    Cumulative GPA
+                </div>
+
+                <div class="summary-gpa">
+                    {cumulative_gpa:.2f}
+                </div>
+            </div>
+
+
+            <div style="flex: 1;">
+                <div class="summary-label">
+                    Total Credits
+                </div>
+
+                <div class="summary-value">
+                    {total_credits:.1f}
+                </div>
+            </div>
+
+
+            <div style="flex: 1;">
+                <div class="summary-label">
+                    Total Points
+                </div>
+
+                <div class="summary-value">
+                    {total_points:.1f}
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
+
+# =========================================================
+# COURSE HEADERS
+# =========================================================
+
+header1, header2, header3, header4 = st.columns(
+    [5, 2, 2, 0.7]
+)
+
+
+with header1:
+
+    st.markdown(
+        '<div class="course-header">Course Name</div>',
+        unsafe_allow_html=True
+    )
+
+
+with header2:
+
+    st.markdown(
+        '<div class="course-header">Grade</div>',
+        unsafe_allow_html=True
+    )
+
+
+with header3:
+
+    st.markdown(
+        '<div class="course-header">Credits</div>',
+        unsafe_allow_html=True
+    )
+
+
+with header4:
+
+    st.markdown(
+        '<div class="course-header"></div>',
+        unsafe_allow_html=True
+    )
+
+
+# =========================================================
+# COURSE ROWS
+# =========================================================
+
+for i, course in enumerate(
+    st.session_state.courses
+):
+
+    col1, col2, col3, col4 = st.columns(
+        [5, 2, 2, 0.7]
+    )
+
+
+    # -----------------------------------------------------
+    # COURSE NAME
+    # -----------------------------------------------------
+
+    with col1:
+
+        course["name"] = st.text_input(
+            "Course",
+            value=course["name"],
+            key=f"course_name_{i}",
+            label_visibility="collapsed",
+            placeholder="Course name"
+        )
+
+
+    # -----------------------------------------------------
+    # GRADE
+    # -----------------------------------------------------
+
+    with col2:
+
+        grade_options = list(
+            grade_points.keys()
+        )
+
+        course["grade"] = st.selectbox(
+            "Grade",
+            grade_options,
+            index=grade_options.index(
+                course["grade"]
+            ),
+            key=f"course_grade_{i}",
+            label_visibility="collapsed"
+        )
+
+
+    # -----------------------------------------------------
+    # CREDITS
+    # -----------------------------------------------------
+
+    with col3:
+
+        course["credits"] = st.number_input(
+            "Credits",
+            min_value=0.0,
+            max_value=100.0,
+            value=float(course["credits"]),
+            step=0.5,
+            key=f"course_credits_{i}",
+            label_visibility="collapsed"
+        )
+
+
+    # -----------------------------------------------------
+    # DELETE
+    # -----------------------------------------------------
+
+    with col4:
+
+        st.button(
+            "×",
+            key=f"delete_course_{i}",
+            on_click=delete_course,
+            args=(i,),
+            use_container_width=True
+        )
+
+
+# =========================================================
+# BUTTONS
+# =========================================================
+
+st.markdown("")
+
+
+col1, col2 = st.columns(2)
 
 
 with col1:
 
     st.button(
-        "➖",
-        on_click=remove_subject,
+        "＋ Add course",
+        on_click=add_course,
         use_container_width=True
     )
 
 
 with col2:
 
-    st.markdown(
-        f"""
-        <h3 style="text-align: center;">
-            {len(st.session_state.subjects)} Subjects
-        </h3>
-        """,
-        unsafe_allow_html=True
-    )
-
-
-with col3:
-
     st.button(
-        "➕",
-        on_click=add_subject,
+        "Reset",
+        on_click=reset_courses,
         use_container_width=True
     )
 
 
-# ==========================================
-# REMOVE WARNING
-# ==========================================
-
-if st.session_state.remove_message:
-
-    st.warning(
-        st.session_state.remove_message
-    )
-
-
-# ==========================================
-# SUBJECTS
-# ==========================================
+# =========================================================
+# GPA SCALE
+# =========================================================
 
 st.markdown("---")
 
-total_gpa = 0.0
+with st.expander("View GPA scale"):
 
-
-for i, subject in enumerate(
-    st.session_state.subjects
-):
-
-    st.subheader(
-        f"📚 Subject {i + 1}"
-    )
-
-
-    # --------------------------------------
-    # SUBJECT NAME
-    # --------------------------------------
-
-    subject["name"] = st.text_input(
-        "Subject Name",
-        value=subject["name"],
-        key=f"subject_name_{i}",
-        placeholder="Enter subject name"
-    )
-
-
-    # --------------------------------------
-    # MARK
-    # --------------------------------------
-
-    subject["mark"] = st.number_input(
-        "Mark (%)",
-        min_value=0.0,
-        max_value=100.0,
-        value=float(subject["mark"]),
-        step=0.1,
-        key=f"subject_mark_{i}"
-    )
-
-
-    # --------------------------------------
-    # INDIVIDUAL GPA
-    # --------------------------------------
-
-    individual_gpa = get_gpa(
-        subject["mark"]
-    )
-
-
-    st.write(
-        f"📊 **{subject['name']} GPA:** "
-        f"{individual_gpa:.2f}"
-    )
-
-
-    total_gpa += individual_gpa
-
-
-    st.markdown("---")
-
-
-# ==========================================
-# OVERALL GPA
-# ==========================================
-
-number_of_subjects = len(
-    st.session_state.subjects
-)
-
-
-overall_gpa = (
-    total_gpa / number_of_subjects
-)
-
-
-# ==========================================
-# FINAL GPA
-# ==========================================
-
-st.header("🏆 Overall GPA")
-
-
-st.metric(
-    "GPA",
-    f"{overall_gpa:.2f} / 4.00"
-)
-
-
-# ==========================================
-# GPA MESSAGE
-# ==========================================
-
-if overall_gpa >= 3.50:
-
-    st.success(
-        "🌟 Excellent GPA! Keep up the great work!"
-    )
-
-elif overall_gpa >= 3.00:
-
-    st.success(
-        "👏 Great job! You are doing really well!"
-    )
-
-elif overall_gpa >= 2.00:
-
-    st.info(
-        "👍 Good effort! Keep working to improve!"
-    )
-
-elif overall_gpa >= 1.00:
-
-    st.warning(
-        "💪 Keep studying and you can raise your GPA!"
-    )
-
-else:
-
-    st.error(
-        "📚 Keep practicing and don't give up!"
-    )
+    st.write("A = 4.00")
+    st.write("A− = 3.70")
+    st.write("B+ = 3.30")
+    st.write("B = 3.00")
+    st.write("B− = 2.70")
+    st.write("C+ = 2.30")
+    st.write("C = 2.00")
+    st.write("C− = 1.70")
+    st.write("D+ = 1.30")
+    st.write("D = 1.00")
+    st.write("D− = 0.70")
+    st.write("F = 0.00")
 
