@@ -11,55 +11,6 @@ st.set_page_config(
 )
 
 # =========================================================
-# CUSTOM CSS
-# =========================================================
-
-st.markdown("""
-<style>
-
-.block-container {
-    max-width: 900px;
-    padding-top: 3rem;
-    padding-bottom: 3rem;
-}
-
-.summary-box {
-    border: 1px solid #dadce0;
-    border-radius: 12px;
-    padding: 24px;
-    margin: 25px 0 30px 0;
-}
-
-.summary-label {
-    font-size: 14px;
-    color: #5f6368;
-    margin-bottom: 5px;
-}
-
-.summary-gpa {
-    font-size: 40px;
-    font-weight: 500;
-    color: #202124;
-}
-
-.summary-value {
-    font-size: 24px;
-    font-weight: 500;
-    color: #202124;
-}
-
-.course-header {
-    font-size: 14px;
-    font-weight: 500;
-    color: #5f6368;
-    margin-bottom: 5px;
-}
-
-</style>
-""", unsafe_allow_html=True)
-
-
-# =========================================================
 # GPA SCALE
 # =========================================================
 
@@ -80,7 +31,6 @@ grade_points = {
 
 grade_options = list(grade_points.keys())
 
-
 # =========================================================
 # SESSION STATE
 # =========================================================
@@ -93,7 +43,6 @@ if "courses" not in st.session_state:
             "credits": 3.0
         }
     ]
-
 
 # =========================================================
 # FUNCTIONS
@@ -109,7 +58,6 @@ def add_course():
 
 def delete_course(index):
 
-    # Keep at least one course
     if len(st.session_state.courses) > 1:
         st.session_state.courses.pop(index)
 
@@ -140,8 +88,8 @@ total_points = 0.0
 
 for course in st.session_state.courses:
 
-    credits = course["credits"]
     grade = course["grade"]
+    credits = course["credits"]
 
     total_credits += credits
     total_points += grade_points[grade] * credits
@@ -163,84 +111,54 @@ st.write(
     "Enter your courses, grades, and credits to calculate your cumulative GPA."
 )
 
+# =========================================================
+# SUMMARY
+# =========================================================
+
+st.subheader("Summary")
+
+summary1, summary2, summary3 = st.columns(3)
+
+with summary1:
+    st.caption("Cumulative GPA")
+    st.metric(
+        label="",
+        value=f"{cumulative_gpa:.2f}"
+    )
+
+with summary2:
+    st.caption("Total Credits")
+    st.metric(
+        label="",
+        value=f"{total_credits:.1f}"
+    )
+
+with summary3:
+    st.caption("Total Points")
+    st.metric(
+        label="",
+        value=f"{total_points:.1f}"
+    )
 
 # =========================================================
-# SUMMARY BOX
+# COURSE SECTION
 # =========================================================
 
-st.markdown(
-    f"""
-    <div class="summary-box">
+st.subheader("Courses")
 
-        <div style="
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            text-align: left;
-        ">
-
-            <div style="flex: 1;">
-                <div class="summary-label">
-                    Cumulative GPA
-                </div>
-
-                <div class="summary-gpa">
-                    {cumulative_gpa:.2f}
-                </div>
-            </div>
-
-            <div style="flex: 1;">
-                <div class="summary-label">
-                    Total Credits
-                </div>
-
-                <div class="summary-value">
-                    {total_credits:.1f}
-                </div>
-            </div>
-
-            <div style="flex: 1;">
-                <div class="summary-label">
-                    Total Points
-                </div>
-
-                <div class="summary-value">
-                    {total_points:.1f}
-                </div>
-            </div>
-
-        </div>
-
-    </div>
-    """,
-    unsafe_allow_html=True
+# Headers
+header1, header2, header3, header4 = st.columns(
+    [5, 2, 2, 0.7]
 )
 
+with header1:
+    st.caption("Course Name")
 
-# =========================================================
-# COURSE HEADERS
-# =========================================================
+with header2:
+    st.caption("Grade")
 
-h1, h2, h3, h4 = st.columns([5, 2, 2, 0.7])
-
-with h1:
-    st.markdown(
-        '<div class="course-header">Course Name</div>',
-        unsafe_allow_html=True
-    )
-
-with h2:
-    st.markdown(
-        '<div class="course-header">Grade</div>',
-        unsafe_allow_html=True
-    )
-
-with h3:
-    st.markdown(
-        '<div class="course-header">Credits</div>',
-        unsafe_allow_html=True
-    )
-
+with header3:
+    st.caption("Credits")
 
 # =========================================================
 # COURSE ROWS
@@ -248,9 +166,10 @@ with h3:
 
 for i, course in enumerate(st.session_state.courses):
 
-    col1, col2, col3, col4 = st.columns([5, 2, 2, 0.7])
+    col1, col2, col3, col4 = st.columns(
+        [5, 2, 2, 0.7]
+    )
 
-    # Course name
     with col1:
 
         course["name"] = st.text_input(
@@ -261,7 +180,6 @@ for i, course in enumerate(st.session_state.courses):
             label_visibility="collapsed"
         )
 
-    # Grade
     with col2:
 
         course["grade"] = st.selectbox(
@@ -272,7 +190,6 @@ for i, course in enumerate(st.session_state.courses):
             label_visibility="collapsed"
         )
 
-    # Credits
     with col3:
 
         course["credits"] = st.number_input(
@@ -285,7 +202,6 @@ for i, course in enumerate(st.session_state.courses):
             label_visibility="collapsed"
         )
 
-    # Delete
     with col4:
 
         st.button(
@@ -295,7 +211,6 @@ for i, course in enumerate(st.session_state.courses):
             args=(i,),
             use_container_width=True
         )
-
 
 # =========================================================
 # BUTTONS
@@ -321,12 +236,11 @@ with button2:
         use_container_width=True
     )
 
-
 # =========================================================
 # GPA SCALE
 # =========================================================
 
-st.markdown("---")
+st.divider()
 
 with st.expander("View GPA scale"):
 
