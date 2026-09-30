@@ -147,6 +147,51 @@ hr {
 
 </style>
 """, unsafe_allow_html=True)
+
+
+
+# =========================================================
+# CENTER GPA METRICS
+# =========================================================
+
+st.markdown("""
+<style>
+
+/* Metric boxes */
+[data-testid="stMetric"] {
+    background: rgba(32, 33, 36, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    padding: 18px 12px;
+    text-align: center;
+}
+
+/* Metric labels */
+[data-testid="stMetricLabel"] {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+    color: #9aa0a6 !important;
+}
+
+/* Metric numbers */
+[data-testid="stMetricValue"] {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+    color: #ffffff !important;
+    margin-top: 4px;
+}
+
+/* Remove extra metric spacing */
+[data-testid="stMetric"] > div {
+    align-items: center;
+}
+
+</style>
+""", unsafe_allow_html=True)
+
+
 # =========================================================
 # GPA SCALE
 # =========================================================
