@@ -17,100 +17,85 @@ st.set_page_config(
 st.markdown("""
 <style>
 
-html, body, [data-testid="stAppViewContainer"] {
+/* Main page */
+[data-testid="stAppViewContainer"] {
     background: #f7f7f7;
 }
 
-/* Moving background lines */
+/* Animated background */
 [data-testid="stAppViewContainer"]::before {
     content: "";
     position: fixed;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
+
+    top: 0;
+    left: 0;
+
+    width: 100vw;
+    height: 100vh;
 
     background-image:
         linear-gradient(
-            115deg,
-            transparent 48%,
-            rgba(0, 0, 0, 0.035) 49%,
-            rgba(0, 0, 0, 0.035) 50%,
-            transparent 51%
-        ),
-        linear-gradient(
-            25deg,
+            120deg,
             transparent 48%,
             rgba(0, 0, 0, 0.025) 49%,
             rgba(0, 0, 0, 0.025) 50%,
             transparent 51%
+        ),
+        linear-gradient(
+            30deg,
+            transparent 48%,
+            rgba(0, 0, 0, 0.02) 49%,
+            rgba(0, 0, 0, 0.02) 50%,
+            transparent 51%
         );
 
     background-size: 180px 180px;
-    animation: moveLines 25s linear infinite;
+
+    animation: movingLines 30s linear infinite;
 
     pointer-events: none;
+
     z-index: 0;
 }
 
-/* Keep the app above the background */
+/* Put ALL Streamlit content above the background */
 [data-testid="stAppViewContainer"] > .main {
     position: relative;
     z-index: 1;
 }
 
-@keyframes moveLines {
+/* Make the main content transparent */
+[data-testid="stAppViewContainer"] .main .block-container {
+    position: relative;
+    z-index: 2;
+}
+
+/* Animation */
+@keyframes movingLines {
 
     0% {
-        transform: translate(0, 0);
+        background-position: 0px 0px;
     }
 
     50% {
-        transform: translate(90px, 60px);
+        background-position: 90px 60px;
     }
 
     100% {
-        transform: translate(180px, 120px);
+        background-position: 180px 120px;
     }
+
 }
 
-/* Make the main content slightly cleaner */
-.block-container {
-    max-width: 900px;
-    padding-top: 3rem;
-    padding-bottom: 3rem;
-}
-
-/* Summary metrics */
-[data-testid="stMetric"] {
-    background: rgba(255, 255, 255, 0.82);
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    border-radius: 12px;
-    padding: 15px;
-    backdrop-filter: blur(8px);
-}
-
-/* Course inputs */
-[data-testid="stTextInput"],
-[data-testid="stSelectbox"],
-[data-testid="stNumberInput"] {
-    background: rgba(255, 255, 255, 0.8);
-    border-radius: 8px;
-}
-
-/* Buttons */
-.stButton > button {
-    border-radius: 8px;
-}
-
-/* Keep sidebar from affecting background */
-section[data-testid="stSidebar"] {
-    background: #f7f7f7;
+/* Keep widgets above everything */
+[data-testid="stVerticalBlock"],
+[data-testid="stHorizontalBlock"] {
+    position: relative;
+    z-index: 3;
 }
 
 </style>
 """, unsafe_allow_html=True)
-
 
 # =========================================================
 # GPA SCALE
