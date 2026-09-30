@@ -11,92 +11,142 @@ st.set_page_config(
 )
 
 # =========================================================
-# MINIMAL ANIMATED BACKGROUND
+# DARK GREY ANIMATED BACKGROUND
 # =========================================================
 
 st.markdown("""
 <style>
 
-/* Main page */
-[data-testid="stAppViewContainer"] {
-    background: #f7f7f7;
-}
-
-/* Animated background */
-[data-testid="stAppViewContainer"]::before {
-    content: "";
-    position: fixed;
-
-    top: 0;
-    left: 0;
-
-    width: 100vw;
-    height: 100vh;
+.stApp {
+    background-color: #202124;
 
     background-image:
         linear-gradient(
             120deg,
-            transparent 48%,
-            rgba(0, 0, 0, 0.025) 49%,
-            rgba(0, 0, 0, 0.025) 50%,
-            transparent 51%
+            transparent 49.5%,
+            rgba(255, 255, 255, 0.08) 50%,
+            transparent 50.5%
         ),
         linear-gradient(
             30deg,
-            transparent 48%,
-            rgba(0, 0, 0, 0.02) 49%,
-            rgba(0, 0, 0, 0.02) 50%,
-            transparent 51%
+            transparent 49.5%,
+            rgba(255, 255, 255, 0.045) 50%,
+            transparent 50.5%
         );
 
-    background-size: 180px 180px;
+    background-size: 220px 220px;
 
-    animation: movingLines 30s linear infinite;
-
-    pointer-events: none;
-
-    z-index: 0;
+    animation: backgroundMove 30s linear infinite;
 }
 
-/* Put ALL Streamlit content above the background */
-[data-testid="stAppViewContainer"] > .main {
+
+/* Moving white lines */
+@keyframes backgroundMove {
+
+    0% {
+        background-position:
+            0px 0px,
+            0px 0px;
+    }
+
+    50% {
+        background-position:
+            110px 70px,
+            -70px 100px;
+    }
+
+    100% {
+        background-position:
+            220px 140px,
+            -140px 200px;
+    }
+
+}
+
+
+/* Main content */
+.block-container {
     position: relative;
     z-index: 1;
 }
 
-/* Make the main content transparent */
-[data-testid="stAppViewContainer"] .main .block-container {
-    position: relative;
-    z-index: 2;
+
+/* Headings and normal text */
+h1, h2, h3, h4, h5, h6, p, label {
+    color: #f1f3f4 !important;
 }
 
-/* Animation */
-@keyframes movingLines {
 
-    0% {
-        background-position: 0px 0px;
-    }
-
-    50% {
-        background-position: 90px 60px;
-    }
-
-    100% {
-        background-position: 180px 120px;
-    }
-
+/* GPA metrics */
+[data-testid="stMetric"] {
+    background: rgba(32, 33, 36, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
 }
 
-/* Keep widgets above everything */
-[data-testid="stVerticalBlock"],
-[data-testid="stHorizontalBlock"] {
-    position: relative;
-    z-index: 3;
+
+/* Metric labels */
+[data-testid="stMetricLabel"] {
+    color: #9aa0a6 !important;
+}
+
+
+/* Metric values */
+[data-testid="stMetricValue"] {
+    color: #ffffff !important;
+}
+
+
+/* Input boxes */
+[data-testid="stTextInput"],
+[data-testid="stSelectbox"],
+[data-testid="stNumberInput"] {
+    background: rgba(32, 33, 36, 0.92);
+}
+
+
+/* Input text */
+input {
+    color: #ffffff !important;
+}
+
+
+/* Dropdown text */
+[data-baseweb="select"] {
+    color: #ffffff !important;
+}
+
+
+/* Buttons */
+.stButton > button {
+    background-color: #292a2d;
+    color: #ffffff;
+    border: 1px solid #5f6368;
+    border-radius: 8px;
+}
+
+
+/* Button hover */
+.stButton > button:hover {
+    background-color: #3c4043;
+    border-color: #ffffff;
+}
+
+
+/* Expander */
+[data-testid="stExpander"] {
+    background: rgba(32, 33, 36, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+
+/* Divider */
+hr {
+    border-color: rgba(255, 255, 255, 0.15);
 }
 
 </style>
 """, unsafe_allow_html=True)
-
 # =========================================================
 # GPA SCALE
 # =========================================================
