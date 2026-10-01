@@ -10,6 +10,7 @@ st.set_page_config(
     layout="centered"
 )
 
+
 # =========================================================
 # DARK GREY ANIMATED BACKGROUND
 # =========================================================
@@ -40,7 +41,6 @@ st.markdown("""
 }
 
 
-/* Moving white lines */
 @keyframes backgroundMove {
 
     0% {
@@ -65,127 +65,153 @@ st.markdown("""
 
 
 /* Main content */
+
 .block-container {
     position: relative;
     z-index: 1;
+
+    max-width: 900px;
+
+    padding-top: 3rem;
+    padding-bottom: 3rem;
 }
 
 
-/* Headings and normal text */
-h1, h2, h3, h4, h5, h6, p, label {
+/* Text */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+label {
     color: #f1f3f4 !important;
 }
 
 
-/* GPA metrics */
+/* =========================================================
+   GPA SUMMARY BOXES
+   ========================================================= */
+
 [data-testid="stMetric"] {
+
     background: rgba(32, 33, 36, 0.92);
+
     border: 1px solid rgba(255, 255, 255, 0.12);
+
     border-radius: 12px;
+
+    padding: 18px 12px;
+
+    text-align: center;
 }
 
 
-/* Metric labels */
 [data-testid="stMetricLabel"] {
+
+    width: 100%;
+
+    justify-content: center;
+
+    text-align: center;
+
     color: #9aa0a6 !important;
 }
 
 
-/* Metric values */
 [data-testid="stMetricValue"] {
+
+    width: 100%;
+
+    justify-content: center;
+
+    text-align: center;
+
     color: #ffffff !important;
+
+    margin-top: 4px;
 }
 
 
-/* Input boxes */
+[data-testid="stMetric"] > div {
+
+    align-items: center;
+}
+
+
+/* =========================================================
+   INPUT BOXES
+   ========================================================= */
+
 [data-testid="stTextInput"],
 [data-testid="stSelectbox"],
 [data-testid="stNumberInput"] {
+
     background: rgba(32, 33, 36, 0.92);
 }
 
 
-/* Input text */
+/* Text inside inputs */
+
 input {
+
     color: #ffffff !important;
 }
 
 
-/* Dropdown text */
+/* Dropdown */
+
 [data-baseweb="select"] {
+
     color: #ffffff !important;
 }
 
 
-/* Buttons */
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+
 .stButton > button {
+
     background-color: #292a2d;
+
     color: #ffffff;
+
     border: 1px solid #5f6368;
+
     border-radius: 8px;
 }
 
 
-/* Button hover */
 .stButton > button:hover {
+
     background-color: #3c4043;
+
     border-color: #ffffff;
 }
 
 
-/* Expander */
+/* =========================================================
+   EXPANDER
+   ========================================================= */
+
 [data-testid="stExpander"] {
-    background: rgba(32, 33, 36, 0.9);
+
+    background: rgba(32, 33, 36, 0.90);
+
     border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 
-/* Divider */
+/* =========================================================
+   DIVIDER
+   ========================================================= */
+
 hr {
+
     border-color: rgba(255, 255, 255, 0.15);
-}
-
-</style>
-""", unsafe_allow_html=True)
-
-
-
-# =========================================================
-# CENTER GPA METRICS
-# =========================================================
-
-st.markdown("""
-<style>
-
-/* Metric boxes */
-[data-testid="stMetric"] {
-    background: rgba(32, 33, 36, 0.92);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 12px;
-    padding: 18px 12px;
-    text-align: center;
-}
-
-/* Metric labels */
-[data-testid="stMetricLabel"] {
-    width: 100%;
-    justify-content: center;
-    text-align: center;
-    color: #9aa0a6 !important;
-}
-
-/* Metric numbers */
-[data-testid="stMetricValue"] {
-    width: 100%;
-    justify-content: center;
-    text-align: center;
-    color: #ffffff !important;
-    margin-top: 4px;
-}
-
-/* Remove extra metric spacing */
-[data-testid="stMetric"] > div {
-    align-items: center;
 }
 
 </style>
@@ -197,19 +223,25 @@ st.markdown("""
 # =========================================================
 
 grade_points = {
+
     "A": 4.00,
     "A-": 3.70,
+
     "B+": 3.30,
     "B": 3.00,
     "B-": 2.70,
+
     "C+": 2.30,
     "C": 2.00,
     "C-": 1.70,
+
     "D+": 1.30,
     "D": 1.00,
     "D-": 0.70,
+
     "F": 0.00
 }
+
 
 grade_options = list(grade_points.keys())
 
@@ -219,47 +251,72 @@ grade_options = list(grade_points.keys())
 # =========================================================
 
 if "courses" not in st.session_state:
+
     st.session_state.courses = [
+
         {
             "name": "",
             "grade": "A",
-            "credits": 3.0
+            "credits": 3
         }
+
     ]
 
 
 # =========================================================
-# FUNCTIONS
+# ADD COURSE
 # =========================================================
 
 def add_course():
-    st.session_state.courses.append({
-        "name": "",
-        "grade": "A",
-        "credits": 3.0
-    })
 
+    st.session_state.courses.append(
 
-def delete_course(index):
-
-    if len(st.session_state.courses) > 1:
-        st.session_state.courses.pop(index)
-
-    else:
-        st.session_state.courses[0] = {
-            "name": "",
-            "grade": "A",
-            "credits": 3.0
-        }
-
-
-def reset_courses():
-    st.session_state.courses = [
         {
             "name": "",
             "grade": "A",
-            "credits": 3.0
+            "credits": 3
         }
+
+    )
+
+
+# =========================================================
+# DELETE COURSE
+# =========================================================
+
+def delete_course(index):
+
+    # Never allow zero courses
+
+    if len(st.session_state.courses) > 1:
+
+        st.session_state.courses.pop(index)
+
+    else:
+
+        st.session_state.courses[0] = {
+
+            "name": "",
+            "grade": "A",
+            "credits": 3
+
+        }
+
+
+# =========================================================
+# RESET
+# =========================================================
+
+def reset_courses():
+
+    st.session_state.courses = [
+
+        {
+            "name": "",
+            "grade": "A",
+            "credits": 3
+        }
+
     ]
 
 
@@ -267,21 +324,31 @@ def reset_courses():
 # CALCULATE GPA
 # =========================================================
 
-total_credits = 0.0
+total_credits = 0
 total_points = 0.0
+
 
 for course in st.session_state.courses:
 
     grade = course["grade"]
+
     credits = course["credits"]
 
     total_credits += credits
-    total_points += grade_points[grade] * credits
+
+    total_points += (
+        grade_points[grade] * credits
+    )
 
 
 if total_credits > 0:
-    cumulative_gpa = total_points / total_credits
+
+    cumulative_gpa = (
+        total_points / total_credits
+    )
+
 else:
+
     cumulative_gpa = 0.0
 
 
@@ -302,27 +369,37 @@ st.write(
 
 st.subheader("Summary")
 
+
 summary1, summary2, summary3 = st.columns(3)
 
+
+# GPA
+
 with summary1:
-    st.caption("Cumulative GPA")
+
     st.metric(
-        label="",
+        label="Cumulative GPA",
         value=f"{cumulative_gpa:.2f}"
     )
 
+
+# Credits
+
 with summary2:
-    st.caption("Total Credits")
+
     st.metric(
-        label="",
-        value=f"{total_credits:.1f}"
+        label="Total Credits",
+        value=f"{total_credits:.0f}"
     )
 
+
+# Points
+
 with summary3:
-    st.caption("Total Points")
+
     st.metric(
-        label="",
-        value=f"{total_points:.1f}"
+        label="Total Points",
+        value=f"{total_points:.2f}"
     )
 
 
@@ -332,17 +409,26 @@ with summary3:
 
 st.subheader("Courses")
 
+
+# Column headers
+
 header1, header2, header3, header4 = st.columns(
     [5, 2, 2, 0.7]
 )
 
+
 with header1:
+
     st.caption("Course Name")
 
+
 with header2:
+
     st.caption("Grade")
 
+
 with header3:
+
     st.caption("Credits")
 
 
@@ -350,51 +436,97 @@ with header3:
 # COURSE ROWS
 # =========================================================
 
-for i, course in enumerate(st.session_state.courses):
+for i, course in enumerate(
+    st.session_state.courses
+):
 
     col1, col2, col3, col4 = st.columns(
         [5, 2, 2, 0.7]
     )
 
+
+    # -----------------------------------------------------
+    # COURSE NAME
+    # -----------------------------------------------------
+
     with col1:
 
         course["name"] = st.text_input(
+
             "Course Name",
+
             value=course["name"],
+
             key=f"name_{i}",
+
             placeholder="Course name",
+
             label_visibility="collapsed"
         )
+
+
+    # -----------------------------------------------------
+    # GRADE
+    # -----------------------------------------------------
 
     with col2:
 
         course["grade"] = st.selectbox(
+
             "Grade",
+
             grade_options,
-            index=grade_options.index(course["grade"]),
+
+            index=grade_options.index(
+                course["grade"]
+            ),
+
             key=f"grade_{i}",
+
             label_visibility="collapsed"
         )
+
+
+    # -----------------------------------------------------
+    # CREDITS
+    # -----------------------------------------------------
 
     with col3:
 
         course["credits"] = st.number_input(
+
             "Credits",
-            min_value=0.0,
-            max_value=100.0,
-            value=float(course["credits"]),
-            step=0.5,
+
+            min_value=1,
+
+            max_value=100,
+
+            value=int(course["credits"]),
+
+            step=1,
+
             key=f"credits_{i}",
+
             label_visibility="collapsed"
         )
+
+
+    # -----------------------------------------------------
+    # DELETE
+    # -----------------------------------------------------
 
     with col4:
 
         st.button(
+
             "×",
+
             key=f"delete_{i}",
+
             on_click=delete_course,
+
             args=(i,),
+
             use_container_width=True
         )
 
@@ -405,21 +537,34 @@ for i, course in enumerate(st.session_state.courses):
 
 st.write("")
 
+
 button1, button2 = st.columns(2)
+
+
+# Add course
 
 with button1:
 
     st.button(
+
         "＋ Add course",
+
         on_click=add_course,
+
         use_container_width=True
     )
+
+
+# Reset
 
 with button2:
 
     st.button(
+
         "Reset",
+
         on_click=reset_courses,
+
         use_container_width=True
     )
 
@@ -430,17 +575,29 @@ with button2:
 
 st.divider()
 
+
 with st.expander("View GPA scale"):
 
     st.write("A = 4.00")
+
     st.write("A− = 3.70")
+
     st.write("B+ = 3.30")
+
     st.write("B = 3.00")
+
     st.write("B− = 2.70")
+
     st.write("C+ = 2.30")
+
     st.write("C = 2.00")
+
     st.write("C− = 1.70")
+
     st.write("D+ = 1.30")
+
     st.write("D = 1.00")
+
     st.write("D− = 0.70")
+
     st.write("F = 0.00")
