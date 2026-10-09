@@ -229,6 +229,7 @@ grade_points = {
     "D": 1.50,
     "D-": 1.00,
     "F": 0.00
+ }
 }
 
 grade_options = list(grade_points.keys())
